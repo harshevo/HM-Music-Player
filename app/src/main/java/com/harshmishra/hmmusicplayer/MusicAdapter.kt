@@ -5,6 +5,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.harshmishra.hmmusicplayer.databinding.MusicViewBinding
 
 class MusicAdapter(private val context: Context, private val musicList: ArrayList<music>) : RecyclerView.Adapter<MusicAdapter.MyHolder>() {
@@ -24,8 +26,10 @@ class MusicAdapter(private val context: Context, private val musicList: ArrayLis
         holder.title.text = musicList[position].title
         holder.album.text = musicList[position].album
         holder.duration.text = musicList[position].duration.toString()
-
-
+        Glide.with(context)
+            .load(musicList[position].artUri)
+            .apply(RequestOptions().placeholder(R.drawable.splah_screen).centerCrop())
+            .into(holder.image)
 
     }
 
