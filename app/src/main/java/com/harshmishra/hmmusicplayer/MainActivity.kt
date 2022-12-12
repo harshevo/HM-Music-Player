@@ -1,14 +1,18 @@
 package com.harshmishra.hmmusicplayer
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.harshmishra.hmmusicplayer.databinding.ActivityMainBinding
+import java.io.File
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
@@ -17,17 +21,15 @@ class MainActivity : AppCompatActivity() {
     //for nav drawer
     private lateinit var toggle: ActionBarDrawerToggle
 
+    private lateinit var musicAdapter: MusicAdapter
+    companion object{
+        lateinit var MusicListMA : ArrayList<music>
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestRuntimePermission()
-        setTheme(R.style.coolPinkNav)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        //for nav drawer
-        toggle = ActionBarDrawerToggle(this,binding.root,R.string.open,R.string.close)
-        binding.root.addDrawerListener(toggle)
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initializeLayout()
+
 
         binding.shuffleBtn.setOnClickListener {
             val intent = Intent(this@MainActivity,Playerhm::class.java)
@@ -83,6 +85,55 @@ class MainActivity : AppCompatActivity() {
         if(toggle.onOptionsItemSelected(item))
             return true
         return super.onOptionsItemSelected(item)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initializeLayout(){
+        requestRuntimePermission()
+        setTheme(R.style.coolPinkNav)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        //for nav drawer
+        toggle = ActionBarDrawerToggle(this,binding.root,R.string.open,R.string.close)
+        binding.root.addDrawerListener(toggle)
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        MusicListMA = getAllAudio()
+
+        binding.musicrv.setHasFixedSize(true)
+        binding.musicrv.setItemViewCacheSize(10)
+        binding.musicrv.layoutManager = LinearLayoutManager(this@MainActivity)
+        musicAdapter = MusicAdapter(this@MainActivity , MusicListMA)
+        binding.musicrv.adapter = musicAdapter
+        binding.totalsongs.text = "Total Songs : "+musicAdapter.itemCount
+    }
+
+    //fetching files from storage
+    @SuppressLint("Range")
+    private fun getAllAudio():ArrayList<music>{
+        val tempList = ArrayList<music>()
+        val selection = MediaStore.Audio.Media.IS_MUSIC + "!=0"
+        val projection = arrayOf(MediaStore.Audio.Media._ID,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.DURATION,MediaStore.Audio.Media.DATE_ADDED,MediaStore.Audio.Media.DATA)
+        val cursor = this.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,projection,selection,null,
+            MediaStore.Audio.Media.DATE_ADDED,null)
+        if(cursor != null) {
+            if (cursor.moveToFirst())
+                do {
+                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
+                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
+                    val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+                    val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
+                    val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+                    val music = music(id = idC , title = titleC , album = albumC , artist = artistC,path = pathC ,duration=durationC)
+                    val file = File(music.path)
+                    if(file.exists())
+                        tempList.add(music)
+                } while (cursor.moveToNext())
+                cursor.close()
+        }
+        return tempList
     }
 
 }
