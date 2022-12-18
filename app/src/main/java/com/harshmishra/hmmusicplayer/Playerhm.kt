@@ -1,5 +1,6 @@
 package com.harshmishra.hmmusicplayer
 
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +61,11 @@ class Playerhm : AppCompatActivity() {
                 createMediaPlayer()
 
             }
+        }
+        //        back button working
+        binding.backBtn2.setOnClickListener {
+            val intent = Intent(this,MainActivity::class.java)
+            startActivity(intent)
         }
     }
 
