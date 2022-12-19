@@ -170,6 +170,7 @@
             android:contentDescription="@string/timer_btn"/>
 
         <ImageButton
+            android:id="@+id/shareBtnPhm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/share_icon"
