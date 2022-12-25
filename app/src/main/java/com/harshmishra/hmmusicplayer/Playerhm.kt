@@ -28,6 +28,12 @@ class Playerhm : AppCompatActivity() {
             if(isPlaying) pauseMusic()
             else playMusic()
         }
+        binding.pre.setOnClickListener {
+
+        }
+        binding.next.setOnClickListener {
+
+        }
     }
     //image for player activity :- playerhm
 
@@ -89,5 +95,19 @@ class Playerhm : AppCompatActivity() {
         binding.playnpause.setIconResource(R.drawable.play_icon)
         isPlaying=false
         mediaPlayer!!.pause()
+    }
+
+    private fun PNSong(increment:Boolean){
+        if(increment){
+            ++songPosition
+            setLayout()
+            createMediaPlayer()
+        }
+        else{
+            --songPosition
+            setLayout()
+            createMediaPlayer()
+        }
+
     }
 }
