@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         lateinit var MusicListMA : ArrayList<music>
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeLayout()

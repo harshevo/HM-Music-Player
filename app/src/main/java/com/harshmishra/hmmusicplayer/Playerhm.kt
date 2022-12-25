@@ -29,10 +29,10 @@ class Playerhm : AppCompatActivity() {
             else playMusic()
         }
         binding.pre.setOnClickListener {
-
+            PNSong(increment = false)
         }
         binding.next.setOnClickListener {
-
+            PNSong(increment = true)
         }
     }
     //image for player activity :- playerhm
@@ -99,15 +99,30 @@ class Playerhm : AppCompatActivity() {
 
     private fun PNSong(increment:Boolean){
         if(increment){
-            ++songPosition
+            songpos(true)
             setLayout()
             createMediaPlayer()
         }
         else{
-            --songPosition
+            songpos(false)
             setLayout()
             createMediaPlayer()
         }
 
     }
-}
+
+    private fun songpos(increment: Boolean){
+        if(increment){
+            if(musicListPA.size -1 == songPosition)
+                songPosition=0
+            else ++songPosition
+
+            }
+            else{
+            if(0 == songPosition)
+                songPosition= musicListPA.size-1
+            else --songPosition
+
+        }
+        }
+    }
