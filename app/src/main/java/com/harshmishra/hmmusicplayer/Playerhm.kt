@@ -68,6 +68,13 @@ class Playerhm : AppCompatActivity() {
                 createMediaPlayer()
 
             }
+            "MainActivity"->{
+                musicListPA = ArrayList()
+                musicListPA.addAll(MainActivity.MusicListMA)
+                musicListPA.shuffle()
+                setLayout()
+                createMediaPlayer()
+            }
         }
         //        back button working
         binding.backBtn2.setOnClickListener {

@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         }
         binding.favBtn.setOnClickListener {
             val intent = Intent(this@MainActivity,fav_activity::class.java)
+            intent.putExtra("index",0)
+            intent.putExtra("class","MainActivity")
             startActivity(intent)
         }
 
